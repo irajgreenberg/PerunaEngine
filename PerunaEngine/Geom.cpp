@@ -38,7 +38,7 @@ void Geom::createBuffers(){
 	// b. Indices  uses ELEMENT_ARRAY_BUFFER
 	glGenBuffers(1, &indexVboID); // Generate buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVboID); // Bind indices VBO
-	int indsDataSize = static_cast<int>(inds.size()) * 3 * sizeof (GL_UNSIGNED_INT);
+	int indsDataSize = static_cast<int>(indPrims.size()) * sizeof (GL_UNSIGNED_INT);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indsDataSize, NULL, GL_STATIC_DRAW); // allocate
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indsDataSize, &indPrims[0]); // upload the data
 
@@ -63,20 +63,20 @@ void Geom::calcFaces() {
 }
 
 void Geom::calcPrimitives(){
-		if (interleavedPrims.size()>0) interleavedPrims.clear();
-		if (indPrims.size()>0) indPrims.clear();
-		std::cout << " verts size = " << verts.size() << std::endl;
-		for (int i = 0; i < verts.size(); i++) {
-			// fill interleaved primitive arrays
-			
-			interleavedPrims.push_back(verts.at(i).x);
-			interleavedPrims.push_back(verts.at(i).y);
-			interleavedPrims.push_back(verts.at(i).z);
+	if (interleavedPrims.size()>0) interleavedPrims.clear();
+	if (indPrims.size() > 0) indPrims.clear();
+	//std::cout << " verts size = " << verts.size() << std::endl;
+	for (int i = 0; i < verts.size(); i++) {
+		// fill interleaved primitive arrays
+		interleavedPrims.push_back(verts.at(i).x);
+		interleavedPrims.push_back(verts.at(i).y);
+		interleavedPrims.push_back(verts.at(i).z);
 
-			interleavedPrims.push_back(.5);
-			interleavedPrims.push_back(.5);
-			interleavedPrims.push_back(1.0);
-			interleavedPrims.push_back(1.0);
+		interleavedPrims.push_back(.5);
+		interleavedPrims.push_back(.5);
+		interleavedPrims.push_back(1.0);
+		interleavedPrims.push_back(1.0);
+
 		// explode inds arrays to primitives
 		for (int i = 0, j = 0; i < inds.size(); i++) {
 			indPrims.push_back(inds.at(i).e0);
@@ -84,9 +84,14 @@ void Geom::calcPrimitives(){
 			indPrims.push_back(inds.at(i).e2);
 		}
 	}
+
+	/*for (int i = 0; i < indPrims.size(); ++i){
+		std::cout << "indPrims = " << indPrims.at(i) << std::endl;
+	}*/
 }
 
 void Geom::display() {
+	
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBindVertexArray(vaoID);
 	glDrawElements(GL_TRIANGLES, static_cast<int>(inds.size()) * 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));

@@ -29,11 +29,12 @@ class Geom {
     
 public:
 	Geom();
+	void display();
 
 
 private:
 
-	enum { STRIDE = 15 };
+	enum { STRIDE = 7 };
 	std::vector<float> interleavedPrims;
 	std::vector<unsigned int> indPrims;
 
@@ -56,15 +57,11 @@ protected:
     std::vector<Face> faces;
     
     
-    
-    void display();
     void calcFaces();
-    
     virtual void init();
     
     virtual void calcVerts() = 0;
     virtual void calcInds() = 0;
-
 };
 
 
