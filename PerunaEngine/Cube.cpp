@@ -9,6 +9,16 @@
 #include "Cube.h"
 
 Cube::Cube() { 
+	for (int i = 0; i < 8; ++i){
+		this->cols.push_back(glm::vec4(.5, .5, .9, 1.0));
+	}
+	init();
+}
+
+Cube::Cube(glm::vec4 cols[]) {
+	for (int i = 0; i < 8; ++i){
+		this->cols.push_back(cols[i]);
+	}
 	init();
 }
 
@@ -34,11 +44,10 @@ void Cube::calcInds() {
     inds.push_back(Elem(6, 5, 3));
     inds.push_back(Elem(0, 4, 7));
     inds.push_back(Elem(0, 7, 1));
-    inds.push_back(Elem(0, 2, 1));
-    inds.push_back(Elem(0, 6, 2));
+    inds.push_back(Elem(7, 2, 1));
+    inds.push_back(Elem(7, 6, 2));
     inds.push_back(Elem(7, 4, 6));
     inds.push_back(Elem(6, 4, 5));
-    
 }
 
 

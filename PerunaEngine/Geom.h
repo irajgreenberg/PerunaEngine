@@ -28,8 +28,14 @@
 class Geom {
     
 public:
+	enum renderMode {
+		SURFACE,
+		WIREFRAME,
+		POINT
+	};
+
 	Geom();
-	void display();
+	void display(renderMode mode = SURFACE);
 
 
 private:

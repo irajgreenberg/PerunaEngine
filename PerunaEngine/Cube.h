@@ -16,6 +16,7 @@ class Cube: public Geom {
     
 public:
     Cube();
+	Cube(glm::vec4 cols[]);
     // must ocreated concrete implementations
     // of abstract functions (pure virtuals)
     void calcVerts();

@@ -29,8 +29,6 @@
 #include "glm/gtx/transform2.hpp"
 
 
-
-
 static void error_callback(int error, const char* description)
 {
     fputs(description, stderr);
@@ -40,7 +38,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
-
 
 float width = 640, height = 480;
 Cube* cube;
@@ -57,27 +54,26 @@ glm::mat4 T, R, S;
 // UNIFORMS for MATRICES
 GLuint M_U, V_U, MV_U, P_U, MVP_U;
 GLuint T_U, R_U, S_U;
-// function prototype
-void initUniforms();
 
 float viewAngle = 75.0f;
 float aspect;
 
+// function prototypes
+void initUniforms();
+void translate(glm::vec3 v);
+void rotate(float ang, glm::vec3 axes);
+void scale(glm::vec3 sclFactor);
+void concat();
 
 
 
 int main(void)
 {
     
-
-	
 	glewExperimental = GL_TRUE;
 	if (!glfwInit()){
 		exit(EXIT_FAILURE);
 	}
-
-	
-
 
 	GLFWwindow* window;
     glfwSetErrorCallback(error_callback);
@@ -93,10 +89,22 @@ int main(void)
     glfwSwapInterval(1);
     glfwSetKeyCallback(window, key_callback);
 
+	glEnable(GL_DEPTH_TEST);
 
 	
 	s = Shader("simpleShader01.vert", "simpleShader01.frag");
-	cube = new Cube();
+
+	glm::vec4 cols[] = {
+		glm::vec4(1.0, 0.0, 0.0, 1.0),
+		glm::vec4(0.0, 1.0, 0.0, 1.0),
+		glm::vec4(0.0, 0, 1.0, 1.0),
+		glm::vec4(1.0, 1.0, 0.0, 1.0),
+		glm::vec4(1.0, 0.0, 1.0, 1.0),
+		glm::vec4(0.0, 1.0, 1.0, 1.0),
+		glm::vec4(1.0, 0.5, 0.0, 1.0),
+		glm::vec4(1.0, 1.0, 1.0, 1.0),
+	};
+	cube = new Cube(cols);
 
 	// initialize view matrices
 	glViewport(0, 0, 640, 480);
@@ -136,34 +144,24 @@ int main(void)
 
     while (!glfwWindowShouldClose(window))
     {
-        float ratio;
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// float ratio;
        // int width, height;
        // glfwGetFramebufferSize(window, &width, &height);
        // ratio = width / (float) height;
         glViewport(0, 0, width, height);
-        glClear(GL_COLOR_BUFFER_BIT);
+		
+
+		// reset to identity each frame
+		M = glm::mat4(1.0f);
+		MV = V * M;
+		MVP = P * MV;
+
 		glUniformMatrix4fv(M_U, 1, GL_FALSE, &M[0][0]);
 		glUniformMatrix4fv(MV_U, 1, GL_FALSE, &MV[0][0]);
 		glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
-		//for (int i = 0; i < 4; i++){
-		//	for (int j = 0; j < 4; j++){
-		//		std::cout << "MVP["<<i<<"]["<<j<<"] = " << MVP[i][j] << std::endl;
-		//	}
-		//}
-        //glMatrixMode(GL_PROJECTION);
-        //glLoadIdentity();
-        //glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-        //glMatrixMode(GL_MODELVIEW);
-        //glLoadIdentity();
-        //glRotatef((float) glfwGetTime() * 50.f, 0.f, 0.f, 1.f);
-        //glBegin(GL_TRIANGLES);
-        //glColor3f(1.f, 0.f, 0.f);
-        //glVertex3f(-0.6f, -0.4f, 0.f);
-        //glColor3f(0.f, 1.f, 0.f);
-        //glVertex3f(0.6f, -0.4f, 0.f);
-        //glColor3f(0.f, 0.f, 1.f);
-        //glVertex3f(0.f, 0.6f, 0.f);
-        //glEnd();
+
+		rotate(glfwGetTime()*100, glm::vec3(.75, 1, .5));
 		cube->display();
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -179,3 +177,29 @@ void initUniforms(){
 	MV_U = glGetUniformLocation(s.shader_id, "modelViewMatrix");
 	MVP_U = glGetUniformLocation(s.shader_id, "modelViewProjectionMatrix");
 }
+
+// TRNAFORMAION Functions
+void translate(glm::vec3 v) {
+	M = glm::translate(M, v);
+	concat();
+}
+
+void rotate(float ang, glm::vec3 axes) {
+	M = glm::rotate(M, ang, axes);
+	concat();
+}
+
+void scale(glm::vec3 sclFactor) {
+	M = glm::scale(M, sclFactor);
+	concat();
+}
+
+// rebuild transformed MVP matrix and update shader uniforms
+void concat(){
+	MV = V * M;
+	MVP = P * MV;
+	glUniformMatrix4fv(M_U, 1, GL_FALSE, &M[0][0]);
+	glUniformMatrix4fv(MV_U, 1, GL_FALSE, &MV[0][0]);
+	glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
+}
+

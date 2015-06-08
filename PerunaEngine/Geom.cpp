@@ -72,10 +72,10 @@ void Geom::calcPrimitives(){
 		interleavedPrims.push_back(verts.at(i).y);
 		interleavedPrims.push_back(verts.at(i).z);
 
-		interleavedPrims.push_back(.5);
-		interleavedPrims.push_back(.5);
-		interleavedPrims.push_back(1.0);
-		interleavedPrims.push_back(1.0);
+		interleavedPrims.push_back(cols.at(i).x);
+		interleavedPrims.push_back(cols.at(i).y);
+		interleavedPrims.push_back(cols.at(i).z);
+		interleavedPrims.push_back(cols.at(i).w);
 
 		// explode inds arrays to primitives
 		for (int i = 0, j = 0; i < inds.size(); i++) {
@@ -84,15 +84,27 @@ void Geom::calcPrimitives(){
 			indPrims.push_back(inds.at(i).e2);
 		}
 	}
-
-	/*for (int i = 0; i < indPrims.size(); ++i){
-		std::cout << "indPrims = " << indPrims.at(i) << std::endl;
-	}*/
 }
 
-void Geom::display() {
+void Geom::display(renderMode mode) {
 	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	switch (mode) {
+	case SURFACE:
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
+	case WIREFRAME:
+		glLineWidth(1.0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		break;
+	case POINT:
+		glPointSize(5.0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+		break;
+	default:
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
+	}
+
 	glBindVertexArray(vaoID);
 	glDrawElements(GL_TRIANGLES, static_cast<int>(inds.size()) * 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	glBindVertexArray(0);
