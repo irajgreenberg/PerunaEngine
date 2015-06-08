@@ -1,3 +1,5 @@
+#version 430 core
+
 // accessing attributes in memory
 // created on CPU side and passed into GPU
 layout (location = 0) in vec3 vertexPosition;

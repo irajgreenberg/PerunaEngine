@@ -13,6 +13,7 @@
 #include <Windows.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "Shader.h"
 #endif
 
 #if defined(__APPLE__)
@@ -36,10 +37,14 @@ int main(void)
 {
     
 
-	glewExperimental = GL_TRUE; 
+	
+	glewExperimental = GL_TRUE;
 	if (!glfwInit()){
 		exit(EXIT_FAILURE);
 	}
+
+	
+
 
 	GLFWwindow* window;
     glfwSetErrorCallback(error_callback);
@@ -54,6 +59,10 @@ int main(void)
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
     glfwSetKeyCallback(window, key_callback);
+
+	Shader s("simpleShader01.vert", "simpleShader01.frag");
+
+
     while (!glfwWindowShouldClose(window))
     {
         float ratio;

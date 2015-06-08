@@ -1,4 +1,4 @@
-#if defined(_WIN32) || defined(__linux__)
+#if defined(_WIN32) || defined(_WIN64)
 #include <GL/glew.h>
 #else
 #include <OpenGL/gl.h>
@@ -16,16 +16,13 @@ class Shader {
 public:
 	Shader();
 	Shader(const std::string& vShader, const std::string& fShader);
-	Shader(const Shader& shdr);
-	Shader& operator=(const Shader& shdr);
-	~Shader();
 
 	void init();
-
 	void bind();
 	void unbind();
 
 	GLuint getID();
+	const GLuint static getID_2();
 	GLuint shader_id;
 
 	// encapsulate passing shader loacations 
@@ -33,30 +30,15 @@ public:
 	void addAttribute(std::string name);
 	void addUniform(std::string name);
 
-	const GLuint static getID_2();
+
 	static void setVertexShader(const std::string& vShaderURL);
 	static void setFragmentShader(const std::string& fShaderURL);
-	static void setGeometryShader(const std::string& gShaderURL);
 	void setShaders(const std::string& vShaderURL, const std::string& fShaderURL);
-
-	/******/#define setVertShader setVertexShader;
-	/******/#define setFragShader setFragmentShader;
-	/******/#define setGeomShader setGeometryShader;
 
 	bool   isLinked();
 
 	void   bindAttribLocation(GLuint location, const char * name);
 	void   bindFragDataLocation(GLuint location, const char * name);
-
-
-	// from Opengl 4.0 Cookbook
-	//void   setUniform(const char *name, const glm::vec3 & v);
-	//void   setUniform(const char *name, const glm::vec4 & v);
-	//void   setUniform(const char *name, const glm::mat4 & m);
-	//void   setUniform(const char *name, const glm::mat3 & m);
-	//void   setUniform(const char *name, float val);
-	//void   setUniform(const char *name, int val);
-	//void   setUniform(const char *name, bool val);
 
 	void   printActiveUniforms();
 	void   printActiveAttribs();
@@ -77,6 +59,10 @@ private:
 	// Shader object is essentily a singleton, so the id will remain unchanged throughout program
 	static GLuint shader_id_2;
 
+
+	// load string
+	static std::string load(const char* data);
+	static const std::string load(std::string str);
 };
 
 inline GLuint Shader::getID() {
@@ -102,5 +88,3 @@ inline void Shader::setShaders(const std::string& vShaderURL, const std::string&
 	fShader = fShaderURL;
 	init();
 }
-
-};
