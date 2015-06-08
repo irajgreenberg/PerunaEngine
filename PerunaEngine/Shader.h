@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #else
 #include <OpenGL/gl.h>
+#define glGenVertexArrays glGenVertexArraysAPPLE
 #endif
 
 #include <stdlib.h>
