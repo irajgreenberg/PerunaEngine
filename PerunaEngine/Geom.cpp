@@ -10,16 +10,15 @@
 
 
 Geom::Geom(){
-	init();
 }
 
 
 void Geom::init() {
-	void calcVerts();
-	void calcInds(); 
+	calcVerts();
+	calcInds(); 
+	calcPrimitives();
 	createBuffers();
 	calcFaces();
-	calcPrimitives();
 }
 
 void Geom::createBuffers(){
@@ -33,6 +32,7 @@ void Geom::createBuffers(){
 	glBindBuffer(GL_ARRAY_BUFFER, vboID); // Bind vertex attributes VBO
 	int vertsDataSize = sizeof (float)* static_cast<int>(interleavedPrims.size());
 	glBufferData(GL_ARRAY_BUFFER, vertsDataSize, NULL, GL_STREAM_DRAW); // allocate space
+	std::cout << " vertsDataSize = " << vertsDataSize << std::endl;
 	glBufferSubData(GL_ARRAY_BUFFER, 0, vertsDataSize, &interleavedPrims[0]); // upload the data
 
 	// b. Indices  uses ELEMENT_ARRAY_BUFFER
@@ -65,9 +65,10 @@ void Geom::calcFaces() {
 void Geom::calcPrimitives(){
 		if (interleavedPrims.size()>0) interleavedPrims.clear();
 		if (indPrims.size()>0) indPrims.clear();
-
+		std::cout << " verts size = " << verts.size() << std::endl;
 		for (int i = 0; i < verts.size(); i++) {
 			// fill interleaved primitive arrays
+			
 			interleavedPrims.push_back(verts.at(i).x);
 			interleavedPrims.push_back(verts.at(i).y);
 			interleavedPrims.push_back(verts.at(i).z);

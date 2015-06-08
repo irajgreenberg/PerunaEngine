@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <iostream>
 #include "Elem.h"
 #include "Face.h"
 #include "glm/glm.hpp"

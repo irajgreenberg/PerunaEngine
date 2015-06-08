@@ -8,9 +8,10 @@
 
 #include "Cube.h"
 
-Cube::Cube() {
-    
+Cube::Cube() { 
+	init();
 }
+
 // must include concrete implementations
 // of abstract functions (pure virtuals)
 void Cube::calcVerts() {

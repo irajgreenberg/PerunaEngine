@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "Shader.h"
+#include "Cube.h"
 #endif
 
 #if defined(__APPLE__)
@@ -33,6 +34,10 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 }
+
+
+Cube* cube; 
+
 int main(void)
 {
     
@@ -60,8 +65,10 @@ int main(void)
     glfwSwapInterval(1);
     glfwSetKeyCallback(window, key_callback);
 
-	Shader s("simpleShader01.vert", "simpleShader01.frag");
 
+	
+	Shader s("../../simpleShader01.vert", "../../simpleShader01.frag");
+	cube = new Cube();
 
     while (!glfwWindowShouldClose(window))
     {
