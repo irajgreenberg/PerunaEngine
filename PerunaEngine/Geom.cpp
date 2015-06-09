@@ -32,7 +32,7 @@ void Geom::createBuffers(){
 	glBindBuffer(GL_ARRAY_BUFFER, vboID); // Bind vertex attributes VBO
 	int vertsDataSize = sizeof (float)* static_cast<int>(interleavedPrims.size());
 	glBufferData(GL_ARRAY_BUFFER, vertsDataSize, NULL, GL_STREAM_DRAW); // allocate space
-	std::cout << " vertsDataSize = " << vertsDataSize << std::endl;
+	//std::cout << " vertsDataSize = " << vertsDataSize << std::endl;
 	glBufferSubData(GL_ARRAY_BUFFER, 0, vertsDataSize, &interleavedPrims[0]); // upload the data
 
 	// b. Indices  uses ELEMENT_ARRAY_BUFFER

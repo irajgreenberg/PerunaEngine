@@ -25,8 +25,10 @@ void Shader::init() {
 	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 #endif
 
-	std::string vShaderCodeStr = load(vShader);
+    
+    std::string vShaderCodeStr = load(vShader);
 	std::string fShaderCodeStr = load(fShader);
+    //std::cout << "fShaderCodeStr = " << fShaderCodeStr << std::endl;
 
 
 	const GLchar* vShaderCode = vShaderCodeStr.c_str();

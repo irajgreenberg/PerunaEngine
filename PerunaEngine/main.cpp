@@ -13,14 +13,15 @@
 #include <Windows.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "Shader.h"
-#include "Cube.h"
 #endif
 
 #if defined(__APPLE__)
 #include <OpenGL/glu.h>
 #include "GLFW/glfw3.h"
 #endif
+
+#include "Shader.h"
+#include "Cube.h"
 
 // for matrices
 #include "glm/gtc/type_ptr.hpp" // matrix copying
@@ -65,12 +66,17 @@ void rotate(float ang, glm::vec3 axes);
 void scale(glm::vec3 sclFactor);
 void concat();
 
-
+// use GL3 context (OpenGL 3.2-4.1) // required for osx only, I think
+#define GLFW_INCLUDE_GLCOREARB
 
 int main(void)
 {
     
-	glewExperimental = GL_TRUE;
+#if defined (_WIN32) || defined(_WIN64)
+    glewExperimental = GL_TRUE;
+#endif
+    
+    
 	if (!glfwInit()){
 		exit(EXIT_FAILURE);
 	}
@@ -79,7 +85,15 @@ int main(void)
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(EXIT_FAILURE);
+    
+//    glfwWindowHint(GLFW_SAMPLES, 4);
+//    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+//    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+//    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+//    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    
     window = glfwCreateWindow(width, height, "Simple example", NULL, NULL);
+    
     if (!window)
     {
         glfwTerminate();
@@ -92,7 +106,7 @@ int main(void)
 	glEnable(GL_DEPTH_TEST);
 
 	
-	s = Shader("simpleShader01.vert", "simpleShader01.frag");
+	s = Shader("/Users/33993405/Desktop/computer_graphics_class/GLFW_Demo/GLFW_Demo/simpleShader01.vert", "/Users/33993405/Desktop/computer_graphics_class/GLFW_Demo/GLFW_Demo/simpleShader01.frag");
 
 	glm::vec4 cols[] = {
 		glm::vec4(1.0, 0.0, 0.0, 1.0),
@@ -129,7 +143,7 @@ int main(void)
 	//nearDist = .1f;
 	//farDist = 1500.0f;
 
-	P = glm::perspective(viewAngle, aspect, .1f, 1000.0f);
+	P = glm::perspective(viewAngle, aspect, .1f, 2000.0f);
 	MVP = P * MV;
 	// END Model / View / Projection data
 
@@ -149,6 +163,8 @@ int main(void)
        // int width, height;
        // glfwGetFramebufferSize(window, &width, &height);
        // ratio = width / (float) height;
+//        std::cout << "width = " << width << std::endl;
+//        std::cout << "height = " << height << std::endl;
         glViewport(0, 0, width, height);
 		
 
@@ -162,7 +178,7 @@ int main(void)
 		glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
 
 		rotate(glfwGetTime()*100, glm::vec3(.75, 1, .5));
-		cube->display();
+        cube->display(Cube::WIREFRAME);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

@@ -10,9 +10,19 @@
 #ifndef __GLFW_Demo__Geom__
 #define __GLFW_Demo__Geom__
 
+#if defined (_WIN32) || defined(_WIN64)
 #include <GL/glew.h>
 #include<gl/gl.h>
 #include<gl/glu.h>
+#endif
+
+#if defined(__APPLE__)
+#define glGenVertexArraysAPPLE glGenVertexArrays
+#define glBindVertexArrayAPPLE glBindVertexArray
+#include <OpenGL/glu.h>
+#include "GLFW/glfw3.h"
+#endif
+
 
 #include <stdio.h>
 #include <vector>
@@ -48,7 +58,7 @@ private:
 	// VAO
 	GLuint vaoID;
 	// VBO stuff
-	GLuint vboID, indexVboID; 
+	GLuint vboID, indexVboID;
 
 	void createBuffers();
 	void calcPrimitives();
