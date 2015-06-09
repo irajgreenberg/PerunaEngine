@@ -1,4 +1,4 @@
-#version 300 core
+#version 410 core
 
 // accessing attributes in memory
 // created on CPU side and passed into GPU

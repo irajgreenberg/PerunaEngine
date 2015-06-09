@@ -16,7 +16,7 @@
 #endif
 
 #if defined(__APPLE__)
-#include <OpenGL/glu.h>
+//#include <OpenGL/glu.h>
 #include "GLFW/glfw3.h"
 #endif
 
@@ -44,7 +44,7 @@ float width = 640, height = 480;
 Cube* cube;
 
 // shader
-Shader s;
+//Shader* s;
 
 // MATRICES
 // model, view, modelView, projection, modelViewProjection
@@ -60,7 +60,7 @@ float viewAngle = 75.0f;
 float aspect;
 
 // function prototypes
-void initUniforms();
+void initUniforms(Shader* s);
 void translate(glm::vec3 v);
 void rotate(float ang, glm::vec3 axes);
 void scale(glm::vec3 sclFactor);
@@ -86,11 +86,10 @@ int main(void)
     if (!glfwInit())
         exit(EXIT_FAILURE);
     
-//    glfwWindowHint(GLFW_SAMPLES, 4);
-//    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-//    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-//    //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-//    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
     window = glfwCreateWindow(width, height, "Simple example", NULL, NULL);
     
@@ -106,7 +105,7 @@ int main(void)
 	glEnable(GL_DEPTH_TEST);
 
 	
-	s = Shader("/Users/33993405/Desktop/computer_graphics_class/GLFW_Demo/GLFW_Demo/simpleShader01.vert", "/Users/33993405/Desktop/computer_graphics_class/GLFW_Demo/GLFW_Demo/simpleShader01.frag");
+	Shader* s = new Shader("/Users/33993405/Desktop/computer_graphics_class/GLFW_Demo/GLFW_Demo/simpleShader01.vert", "/Users/33993405/Desktop/computer_graphics_class/GLFW_Demo/GLFW_Demo/simpleShader01.frag");
 
 	glm::vec4 cols[] = {
 		glm::vec4(1.0, 0.0, 0.0, 1.0),
@@ -125,7 +124,7 @@ int main(void)
 
 	// START standard transformation matrices: ModelView / Projection / Normal
 	M = glm::mat4(1.0f); // set to identity
-	V = glm::lookAt(glm::vec3(0.0, 0.0, 2.0f), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+	V = glm::lookAt(glm::vec3(0.0, 0.0, 10.0f), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 	MV = V * M;
 
 	// projection matrix and MVP Matrix
@@ -151,9 +150,9 @@ int main(void)
 	T = glm::mat4(1.0f);
 	R = glm::mat4(1.0f);
 	S = glm::mat4(1.0f);
-	s.bind();
+	s->bind();
 
-	initUniforms();
+	initUniforms(s);
 
 
     while (!glfwWindowShouldClose(window))
@@ -177,7 +176,7 @@ int main(void)
 		glUniformMatrix4fv(MV_U, 1, GL_FALSE, &MV[0][0]);
 		glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
 
-		rotate(glfwGetTime()*100, glm::vec3(.75, 1, .5));
+		rotate(glfwGetTime(), glm::vec3(.75, 1, .5));
         cube->display(Cube::WIREFRAME);
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -187,11 +186,12 @@ int main(void)
     exit(EXIT_SUCCESS);
 }
 
-void initUniforms(){
+void initUniforms(Shader* s){
+   // std::cout << "s->shader_id = " << s->shader_id << std::endl;
 	// set variable name of uniforms in shader
-	M_U = glGetUniformLocation(s.shader_id, "modelMatrix");
-	MV_U = glGetUniformLocation(s.shader_id, "modelViewMatrix");
-	MVP_U = glGetUniformLocation(s.shader_id, "modelViewProjectionMatrix");
+	M_U = glGetUniformLocation(s->shader_id, "modelMatrix");
+	MV_U = glGetUniformLocation(s->shader_id, "modelViewMatrix");
+	MVP_U = glGetUniformLocation(s->shader_id, "modelViewProjectionMatrix");
 }
 
 // TRNAFORMAION Functions

@@ -1,8 +1,8 @@
 #if defined(_WIN32) || defined(_WIN64)
 #include <GL/glew.h>
 #else
-#include <OpenGL/gl.h>
-#define glGenVertexArrays glGenVertexArraysAPPLE
+#include <OpenGL/gl3.h>
+#define GLFW_INCLUDE_GLCOREARB
 #endif
 
 #include <stdlib.h>

@@ -9,11 +9,11 @@ Shader::Shader() {
 
 Shader::Shader(const std::string& vShader, const std::string& fShader) :
 vShader(vShader), fShader(fShader){
-	init();
+    init();
 }
 
 void Shader::init() {
-
+    
 	// initialize glew for Windows
 #if defined(_WIN32) || defined(_win64)
 	GLenum err = glewInit();
@@ -28,6 +28,9 @@ void Shader::init() {
     
     std::string vShaderCodeStr = load(vShader);
 	std::string fShaderCodeStr = load(fShader);
+    
+    //std::string vShaderCodeStr = "void main(void) {\n}";
+    //std::string fShaderCodeStr = "void main() {\n}";
     //std::cout << "fShaderCodeStr = " << fShaderCodeStr << std::endl;
 
 
@@ -55,12 +58,14 @@ void Shader::init() {
 	glShaderSource(shader_vp, 1, &vShaderCode, NULL);
 	glShaderSource(shader_fp, 1, &fShaderCode, NULL);
 
-	glCompileShader(shader_vp);
+    
+    glCompileShader(shader_vp);
 	glCompileShader(shader_fp);
 
 	//Check shader for errors
 	GLint shaderCompiled = GL_FALSE;
 	glGetShaderiv(shader_vp, GL_COMPILE_STATUS, &shaderCompiled);
+    //std::cout << "shaderCompiled = " << shaderCompiled << std::endl;
 	if (shaderCompiled != GL_TRUE)
 	{
 		printf("Unable to compile Vertex shader %d!\n\nSource:\n%s\n", shader_vp, vShaderCode);
