@@ -8,6 +8,7 @@ layout (location = 2) in vec4 vertexColor;
 
 // to pass color through to the Fragment shader
 out vec4 vertCol;
+out vec3 vertNorm;
 
 
 uniform mat4 modelMatrix;
@@ -17,6 +18,7 @@ uniform mat4 modelViewProjectionMatrix;
 
 void main(void) {
 	vertCol = vertexColor;
+    vertNorm = vertexNormal;
   	gl_Position = modelViewProjectionMatrix * vec4(vertexPosition, 1.0);
 }
 
