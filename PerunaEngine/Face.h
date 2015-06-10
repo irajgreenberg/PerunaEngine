@@ -14,14 +14,22 @@
 
 struct Face {
     
-    glm::vec3 v0, v1, v2;
+    glm::vec3* v0, * v1, * v2;
     
     Face(){
     }
     
-    Face(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2):
+    Face(glm::vec3* v0, glm::vec3* v1, glm::vec3* v2):
     v0(v0), v1(v1), v2(v2)
     {
+    }
+    
+    glm::vec3 normal(){
+        glm::vec3 va = *v1 - *v0;
+        glm::vec3 vb = *v2 - *v0;
+        va = glm::normalize(va);
+        vb = glm::normalize(vb);
+        return glm::cross(va, vb);
     }
     
 };

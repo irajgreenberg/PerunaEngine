@@ -15,10 +15,12 @@ Geom::Geom(){
 
 void Geom::init() {
 	calcVerts();
-	calcInds(); 
+	calcInds();
+    calcFaces();
+    calcVertexNorms();
 	calcPrimitives();
 	createBuffers();
-	calcFaces();
+	
 }
 
 void Geom::createBuffers(){
@@ -42,13 +44,14 @@ void Geom::createBuffers(){
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indsDataSize, NULL, GL_STATIC_DRAW); // allocate
 	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indsDataSize, &indPrims[0]); // upload the data
 
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 3; i++) {
 		glEnableVertexAttribArray(i);
 	}
-	// STRIDE is 15: pos(3) + norm(3) + col(4) + uv(2) + tang(3)
-	// (x, y, z, nx, ny, nz, r, g, b, a, u, v, tx, ty, tz)
+	// STRIDE is 10: pos(3) + vertex norm(3) + col(4)
+	// (x, y, z, nx, ny, nz, r, g, b, a)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(0)); // pos
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(12)); // col
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(12)); // vertex norms
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(24)); // col
 
 	// Disable VAO
 	glEnableVertexAttribArray(0);
@@ -58,8 +61,19 @@ void Geom::createBuffers(){
 
 void Geom::calcFaces() {
     for(int i=0; i<inds.size(); ++i){
-        faces.push_back( Face(verts.at(inds.at(i).e0), verts.at(inds.at(i).e1), verts.at(inds.at(i).e2)) );
+        faces.push_back( Face(&verts.at(inds.at(i).e0), &verts.at(inds.at(i).e1), &verts.at(inds.at(i).e2)) );
     }                                                
+}
+void Geom::calcVertexNorms() {
+    for(int i=0; i<verts.size(); ++i){
+        glm::vec3 temp;
+        for(int j=0; j<faces.size(); ++j){
+            if (&verts.at(i) == faces.at(j).v0 || &verts.at(i) == faces.at(j).v1 || &verts.at(i) == faces.at(j).v2){
+                temp += faces.at(j).normal();
+            }
+        }
+        vertNorms.push_back(glm::normalize(temp));
+    }
 }
 
 void Geom::calcPrimitives(){
@@ -68,14 +82,22 @@ void Geom::calcPrimitives(){
 	//std::cout << " verts size = " << verts.size() << std::endl;
 	for (int i = 0; i < verts.size(); i++) {
 		// fill interleaved primitive arrays
-		interleavedPrims.push_back(verts.at(i).x);
+		
+        // position
+        interleavedPrims.push_back(verts.at(i).x);
 		interleavedPrims.push_back(verts.at(i).y);
 		interleavedPrims.push_back(verts.at(i).z);
+        
+        // vertex normals
+        interleavedPrims.push_back(vertNorms.at(i).x);
+        interleavedPrims.push_back(vertNorms.at(i).y);
+        interleavedPrims.push_back(vertNorms.at(i).z);
 
-		interleavedPrims.push_back(cols.at(i).x);
-		interleavedPrims.push_back(cols.at(i).y);
-		interleavedPrims.push_back(cols.at(i).z);
-		interleavedPrims.push_back(cols.at(i).w);
+		// colors
+        interleavedPrims.push_back(cols.at(i).x); // r
+		interleavedPrims.push_back(cols.at(i).y); // g
+		interleavedPrims.push_back(cols.at(i).z); // b
+		interleavedPrims.push_back(cols.at(i).w); // a
 
 		// explode inds arrays to primitives
 		for (int i = 0, j = 0; i < inds.size(); i++) {
@@ -109,3 +131,8 @@ void Geom::display(renderMode mode) {
 	glDrawElements(GL_TRIANGLES, static_cast<int>(inds.size()) * 3, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	glBindVertexArray(0);
 }
+
+
+
+
+

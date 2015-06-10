@@ -90,3 +90,6 @@ inline void Shader::setShaders(const std::string& vShaderURL, const std::string&
 	fShader = fShaderURL;
 	init();
 }
+
+
+

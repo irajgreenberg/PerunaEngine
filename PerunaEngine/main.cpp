@@ -177,7 +177,7 @@ int main(void)
 		glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
 
 		rotate(glfwGetTime(), glm::vec3(.75, 1, .5));
-        cube->display(Cube::WIREFRAME);
+        cube->display(Cube::SURFACE);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

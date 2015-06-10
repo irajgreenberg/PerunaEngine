@@ -50,7 +50,7 @@ public:
 
 private:
 
-	enum { STRIDE = 7 };
+	enum { STRIDE = 10 };
 	std::vector<float> interleavedPrims;
 	std::vector<unsigned int> indPrims;
 
@@ -60,14 +60,16 @@ private:
 	// VBO stuff
 	GLuint vboID, indexVboID;
 
-	void createBuffers();
-	void calcPrimitives();
+    void calcVertexNorms();
+    void calcPrimitives();
+    void createBuffers();
 	
-
+   
 
 protected:
     
     std::vector<glm::vec3> verts;
+    std::vector<glm::vec3> vertNorms;
     std::vector<glm::vec4> cols;
     std::vector<Elem> inds;
     std::vector<Face> faces;
