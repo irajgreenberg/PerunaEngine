@@ -49,11 +49,13 @@ Cube* cube;
 // MATRICES
 // model, view, modelView, projection, modelViewProjection
 glm::mat4 M, V, MV, P, MVP;
+glm::mat3 N;
 // translate, rotate, scale
 glm::mat4 T, R, S;
 
 // UNIFORMS for MATRICES
 GLuint M_U, V_U, MV_U, P_U, MVP_U;
+GLuint N_U;
 GLuint T_U, R_U, S_U;
 
 float viewAngle = 75.0f;
@@ -103,6 +105,8 @@ int main(void)
     glfwSetKeyCallback(window, key_callback);
 
 	glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
 	
 	Shader* s = new Shader("/Users/33993405/Desktop/computer_graphics_class/GLFW_Demo/GLFW_Demo/simpleShader01.vert", "/Users/33993405/Desktop/computer_graphics_class/GLFW_Demo/GLFW_Demo/simpleShader01.frag");
@@ -129,6 +133,7 @@ int main(void)
 	M = glm::mat4(1.0f); // set to identity
 	V = glm::lookAt(glm::vec3(0.0, 0.0, 10.0f), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 	MV = V * M;
+    N = glm::transpose(glm::inverse(glm::mat3(MV)));
 
 	// projection matrix and MVP Matrix
 	// perspective
@@ -145,7 +150,7 @@ int main(void)
 	//nearDist = .1f;
 	//farDist = 1500.0f;
 
-	P = glm::perspective(viewAngle, aspect, .1f, 2000.0f);
+	P = glm::perspective(viewAngle, aspect, .1f, 400.0f);
 	MVP = P * MV;
 	// END Model / View / Projection data
 
@@ -173,13 +178,15 @@ int main(void)
 		// reset to identity each frame
 		M = glm::mat4(1.0f);
 		MV = V * M;
+        N = glm::transpose(glm::inverse(glm::mat3(MV)));
 		MVP = P * MV;
 
 		glUniformMatrix4fv(M_U, 1, GL_FALSE, &M[0][0]);
 		glUniformMatrix4fv(MV_U, 1, GL_FALSE, &MV[0][0]);
 		glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
+        glUniformMatrix4fv(N_U, 1, GL_FALSE, &N[0][0]);
 
-		rotate(glfwGetTime(), glm::vec3(.75, 1, .5));
+		rotate(glfwGetTime(), glm::vec3(.25, 1, .65));
         cube->display(Cube::SURFACE);
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -195,6 +202,7 @@ void initUniforms(Shader* s){
 	M_U = glGetUniformLocation(s->shader_id, "modelMatrix");
 	MV_U = glGetUniformLocation(s->shader_id, "modelViewMatrix");
 	MVP_U = glGetUniformLocation(s->shader_id, "modelViewProjectionMatrix");
+    N_U = glGetUniformLocation(s->shader_id, "normalMatrix");
 }
 
 // TRNAFORMAION Functions
@@ -216,9 +224,11 @@ void scale(glm::vec3 sclFactor) {
 // rebuild transformed MVP matrix and update shader uniforms
 void concat(){
 	MV = V * M;
+    N = glm::transpose(glm::inverse(glm::mat3(MV)));
 	MVP = P * MV;
 	glUniformMatrix4fv(M_U, 1, GL_FALSE, &M[0][0]);
 	glUniformMatrix4fv(MV_U, 1, GL_FALSE, &MV[0][0]);
 	glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
+    glUniformMatrix4fv(N_U, 1, GL_FALSE, &N[0][0]);
 }
 
