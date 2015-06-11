@@ -22,6 +22,7 @@
 
 #include "Shader.h"
 #include "Cube.h"
+#include "Toroid.h"
 
 // for matrices
 #include "glm/gtc/type_ptr.hpp" // matrix copying
@@ -43,8 +44,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 
 float width = 640, height = 480;
-Cube* cube;
-
+Cube* cube, * ground;
+Toroid* toroid;
 // shader
 //Shader* s;
 
@@ -79,13 +80,15 @@ std::stack <glm::mat4> matrixStack;
 #define GLFW_INCLUDE_GLCOREARB
 
 // create a cube of cubes
-static const int ROWS = 12;
-static const int COLUMNS = 12;
-static const int LAYERS = 12;
-float columnWidth = 1;
+static const int ROWS = 2;
+static const int COLUMNS = 2;
+static const int LAYERS = 2;
+float columnWidth = 3;
 float rowHeight = 3;
 float layerDepth = 3;
 float columnGap, rowGap, layerGap;
+
+float zoomFactor;
 
 int main(void)
 {
@@ -142,13 +145,17 @@ int main(void)
          cols[i] = glm::vec4(.2, .2, .2, 1.0);
     }
 	cube = new Cube(cols);
+    ground = new Cube();
+    //float toroidRadius, float ringRadius, int toroidDetail, int ringDetail
+    toroid = new Toroid(2, .15, 16, 16);
 
 	// initialize view matrices
 	glViewport(0, 0, 640, 480);
 
 	// START standard transformation matrices: ModelView / Projection / Normal
 	M = glm::mat4(1.0f); // set to identity
-	V = glm::lookAt(glm::vec3(0.0, 0.0, 10.0f), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+    // eye, center, up axis
+	V = glm::lookAt(glm::vec3(0.0, 0.0, 3.0f), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
 	MV = V * M;
     N = glm::transpose(glm::inverse(glm::mat3(MV)));
 
@@ -167,7 +174,7 @@ int main(void)
 	//nearDist = .1f;
 	//farDist = 1500.0f;
 
-	P = glm::perspective(viewAngle, aspect, .1f, 400.0f);
+	P = glm::perspective(viewAngle, aspect, .1f, 500.0f);
 	MVP = P * MV;
 	// END Model / View / Projection data
 
@@ -197,6 +204,7 @@ int main(void)
 
 		// reset to identity each frame
 		M = glm::mat4(1.0f);
+        V = glm::lookAt(glm::vec3(0.0, 0.0, 10), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
 		MV = V * M;
         //mat4 normalMatrix = transpose(inverse(modelView));
         N = glm::transpose(glm::inverse(glm::mat3(MV)));
@@ -208,18 +216,23 @@ int main(void)
         glUniformMatrix4fv(N_U, 1, GL_FALSE, &N[0][0]);
 
 		// global transforms
-        //translate(glm::vec3(0, 0, -5));
-        rotate(-glfwGetTime(), glm::vec3(-.35, 1, .1));
+        pushMatrix();
+        translate(glm::vec3(0, -3, 0));
+        scale(glm::vec3(2000, .3, 2000));
+        ground->display();
+        
+        popMatrix();
+        
+        rotate(-glfwGetTime()*.1, glm::vec3(-.35, 1, .1));
         
         for(int i=0; i<COLUMNS; ++i){
             for(int j=0; j<ROWS; ++j){
                 for(int k=0; k<LAYERS; ++k){
                     pushMatrix();
                     translate(glm::vec3(-columnWidth/2+columnGap*i, -rowHeight/2+rowGap*j, -layerDepth/2+layerGap*k));
-                    //translate(glm::vec3(columnGap*i, rowGap*j, layerGap*k));
                     rotate(-glfwGetTime(), glm::vec3(-.35, 1, .1));
-                    scale(glm::vec3(.25, .25, .25));
-                    cube->display();
+                    scale(glm::vec3(.55, .55, .55));
+                    toroid->display(Geom::WIREFRAME);
                     popMatrix();
                 }
             }

@@ -31,7 +31,7 @@
 #include "Face.h"
 #include "glm/glm.hpp"
 
-#endif /* defined(__GLFW_Demo__Geom__) */
+
 
 #define BUFFER_OFFSET(i) ((void*)(i))
 
@@ -81,6 +81,8 @@ protected:
     virtual void calcVerts() = 0;
     virtual void calcInds() = 0;
 };
+
+#endif /* defined(__GLFW_Demo__Geom__) */
 
 
 
