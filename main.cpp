@@ -78,6 +78,15 @@ std::stack <glm::mat4> matrixStack;
 // use GL3 context (OpenGL 3.2-4.1) // required for osx only, I think
 #define GLFW_INCLUDE_GLCOREARB
 
+// create a cube of cubes
+static const int ROWS = 12;
+static const int COLUMNS = 12;
+static const int LAYERS = 12;
+float columnWidth = 1;
+float rowHeight = 3;
+float layerDepth = 3;
+float columnGap, rowGap, layerGap;
+
 int main(void)
 {
     
@@ -116,7 +125,7 @@ int main(void)
     glCullFace(GL_BACK);
 
 	
-    Shader* s = new Shader("/Users/33993405/Desktop/computer_graphics_class/GLFW_Demo/GLFW_Demo/PerunaEngine/simpleShader01.vert", "/Users/33993405/Desktop/computer_graphics_class/GLFW_Demo/GLFW_Demo/PerunaEngine/simpleShader01.frag");
+    Shader* s = new Shader("/Users/33993405/dev/GLFW_Demo/GLFW_Demo/PerunaEngine/simpleShader01.vert", "/Users/33993405/dev/GLFW_Demo/GLFW_Demo/PerunaEngine/simpleShader01.frag");
 
 	glm::vec4 cols[] = {
 		glm::vec4(1.0, 0.0, 0.0, 1.0),
@@ -170,7 +179,11 @@ int main(void)
 
 	initUniforms(s);
 
-
+// set up vals for cube of cubes
+    columnGap = columnWidth / (COLUMNS-1);
+    rowGap = rowHeight / (ROWS-1);
+    layerGap = layerDepth / (LAYERS-1);
+    
     while (!glfwWindowShouldClose(window))
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -194,18 +207,23 @@ int main(void)
 		glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
         glUniformMatrix4fv(N_U, 1, GL_FALSE, &N[0][0]);
 
-		translate(glm::vec3(0, 0, -3));
-        pushMatrix();
-        translate(glm::vec3(1, 0, 0));
-        rotate(glfwGetTime(), glm::vec3(.25, 1, .75));
-        cube->display(Cube::SURFACE);
-        popMatrix();
-        
-        pushMatrix();
-        translate(glm::vec3(-1, 0, 0));
+		// global transforms
+        //translate(glm::vec3(0, 0, -5));
         rotate(-glfwGetTime(), glm::vec3(-.35, 1, .1));
-        cube->display(Cube::SURFACE);
-        popMatrix();
+        
+        for(int i=0; i<COLUMNS; ++i){
+            for(int j=0; j<ROWS; ++j){
+                for(int k=0; k<LAYERS; ++k){
+                    pushMatrix();
+                    translate(glm::vec3(-columnWidth/2+columnGap*i, -rowHeight/2+rowGap*j, -layerDepth/2+layerGap*k));
+                    //translate(glm::vec3(columnGap*i, rowGap*j, layerGap*k));
+                    rotate(-glfwGetTime(), glm::vec3(-.35, 1, .1));
+                    scale(glm::vec3(.25, .25, .25));
+                    cube->display();
+                    popMatrix();
+                }
+            }
+        }
         
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -213,6 +231,7 @@ int main(void)
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);
+    
 }
 
 void initUniforms(Shader* s){
