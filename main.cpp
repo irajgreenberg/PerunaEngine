@@ -45,7 +45,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 float width = 640, height = 480;
 Cube* cube, * ground;
-Toroid* toroid;
+//Toroid toroid;
 // shader
 //Shader* s;
 
@@ -129,7 +129,6 @@ int main(void)
 
 	
     Shader* s = new Shader("/Users/33993405/dev/GLFW_Demo/GLFW_Demo/PerunaEngine/simpleShader01.vert", "/Users/33993405/dev/GLFW_Demo/GLFW_Demo/PerunaEngine/simpleShader01.frag");
-
 	glm::vec4 cols[] = {
 		glm::vec4(1.0, 0.0, 0.0, 1.0),
 		glm::vec4(0.0, 1.0, 0.0, 1.0),
@@ -147,7 +146,10 @@ int main(void)
 	cube = new Cube(cols);
     ground = new Cube();
     //float toroidRadius, float ringRadius, int toroidDetail, int ringDetail
-    toroid = new Toroid(2, .15, 16, 16);
+   // toroid = new Toroid(1, .45, 16, 16);
+    Toroid toroid(1, .45, 36, 36);
+
+    
 
 	// initialize view matrices
 	glViewport(0, 0, 640, 480);
@@ -204,7 +206,7 @@ int main(void)
 
 		// reset to identity each frame
 		M = glm::mat4(1.0f);
-        V = glm::lookAt(glm::vec3(0.0, 0.0, 10), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
+        V = glm::lookAt(glm::vec3(0.0, 0.0, 20), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
 		MV = V * M;
         //mat4 normalMatrix = transpose(inverse(modelView));
         N = glm::transpose(glm::inverse(glm::mat3(MV)));
@@ -217,13 +219,12 @@ int main(void)
 
 		// global transforms
         pushMatrix();
-        translate(glm::vec3(0, -3, 0));
+        translate(glm::vec3(0, -5, 0));
         scale(glm::vec3(2000, .3, 2000));
         ground->display();
-        
         popMatrix();
         
-        rotate(-glfwGetTime()*.1, glm::vec3(-.35, 1, .1));
+        //rotate(-glfwGetTime()*.1, glm::vec3(-.35, 1, .1));
         
         for(int i=0; i<COLUMNS; ++i){
             for(int j=0; j<ROWS; ++j){
@@ -232,11 +233,19 @@ int main(void)
                     translate(glm::vec3(-columnWidth/2+columnGap*i, -rowHeight/2+rowGap*j, -layerDepth/2+layerGap*k));
                     rotate(-glfwGetTime(), glm::vec3(-.35, 1, .1));
                     scale(glm::vec3(.55, .55, .55));
-                    toroid->display(Geom::WIREFRAME);
+                    //toroid.display();
                     popMatrix();
                 }
             }
         }
+        
+        pushMatrix();
+        translate(glm::vec3(0, 0, -8));
+        rotate(-glfwGetTime(), glm::vec3(.65, 1, .345));
+        scale(glm::vec3(2.55, 2.55, 2.55));
+        toroid.display();
+        popMatrix();
+
         
         glfwSwapBuffers(window);
         glfwPollEvents();

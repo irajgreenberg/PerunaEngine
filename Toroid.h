@@ -16,7 +16,7 @@ class Toroid: public Geom {
     
 public:
     Toroid();
-    Toroid(float toroidRadius, float ringRadius, int toroidDetail, int ringDetail);
+    Toroid(float toroidRadius, float ringRadius, int toroidDetail, int ringDetail, const glm::vec4& col = glm::vec4(.25, .05, .75, 1.0));
     // must ocreated concrete implementations
     // of abstract functions (pure virtuals)
     void calcVerts();
