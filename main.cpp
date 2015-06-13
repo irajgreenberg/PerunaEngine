@@ -128,7 +128,7 @@ int main(void)
     glCullFace(GL_BACK);
 
 	
-    Shader* s = new Shader("/Users/33993405/dev/GLFW_Demo/GLFW_Demo/PerunaEngine/simpleShader01.vert", "/Users/33993405/dev/GLFW_Demo/GLFW_Demo/PerunaEngine/simpleShader01.frag");
+    Shader* s = new Shader("../PerunaEngine/simpleShader01.vert", "../PerunaEngine/simpleShader01.frag");
 	glm::vec4 cols[] = {
 		glm::vec4(1.0, 0.0, 0.0, 1.0),
 		glm::vec4(0.0, 1.0, 0.0, 1.0),

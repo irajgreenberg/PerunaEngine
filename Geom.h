@@ -11,6 +11,7 @@
 #define __GLFW_Demo__Geom__
 
 #if defined (_WIN32) || defined(_WIN64)
+#define _USE_MATH_DEFINES
 #include <GL/glew.h>
 #include<gl/gl.h>
 #include<gl/glu.h>
