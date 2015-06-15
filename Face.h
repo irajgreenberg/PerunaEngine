@@ -29,7 +29,7 @@ struct Face {
         glm::vec3 vb = *v2 - *v0;
         va = glm::normalize(va);
         vb = glm::normalize(vb);
-        return glm::cross(vb, va);
+        return glm::cross(va, vb);
     }
     
 };

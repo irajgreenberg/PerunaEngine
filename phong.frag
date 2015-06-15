@@ -1,50 +1,124 @@
-#version 410 core
+#version 430 core
 
-//http://www.mathematik.uni-marburg.de/~thormae/lectures/graphics1/code/WebGLShaderLightMat/ShaderLightMat.html
-
-in vec3 vert; // orig attribute vertex set in v. shader
-in vec3 vertNorm; // orig attribute vertex normal set in v. shader
 in vec4 vertCol; // orig attribute color set in v. shader
+out vec4 color;
 
-precision mediump float;
+// Texture maps
+//layout (binding = 0) uniform sampler2D shadowMap;
+//layout (binding = 0) uniform sampler2D diffuseMap;
+//layout (binding = 1) uniform sampler2D bumpMap;
 
-in vec3 normalInterp;
-in vec3 vertPos;
+// Texture maps
+uniform bool shadowPassFlag;
+uniform sampler2DShadow shadowMap;
+uniform sampler2D diffuseMap;
+uniform sampler2D bumpMap;
 
-uniform int mode;
+in vec4 shadowMapCoords;
 
-const vec3 lightPos = vec3(1.0,1.0,1.0);
-const vec3 ambientColor = vec3(0.1, 0.0, 0.0);
-const vec3 diffuseColor = vec3(0.5, 0.0, 0.0);
-const vec3 specColor = vec3(1.0, 1.0, 1.0);
 
-void main() {
+// max 8 lt srcs (fer now...)
+struct Light {
+	vec3 position;
+	vec3 intensity;
+	//vec4 diffuse;
+	//vec4 ambient;
+	//vec4 specular;
+};
 
-  vec3 normal = normalize(normalInterp);
-  vec3 lightDir = normalize(lightPos - vertPos);
+// currently max 8 lts
+uniform Light lights[8];
 
-  float lambertian = max(dot(lightDir,normal), 0.0);
-  float specular = 0.0;
+// global ambient light
+uniform vec3 globalAmbientLight;
 
-  if(lambertian > 0.0) {
+// materials
+uniform vec4 diffuseMaterial;
+uniform vec4 ambientMaterial;
+uniform vec4 specularMaterial;
+uniform vec4 emissiveMaterial;
+uniform float shininess;
 
-    vec3 viewDir = normalize(-vertPos);
+//uniform bool isShadowEnabled;
 
-    // this is blinn phong
-    vec3 halfDir = normalize(lightDir + viewDir);
-    float specAngle = max(dot(halfDir, normal), 0.0);
-    specular = pow(specAngle, 16.0);
-       
-    // this is phong (for comparison)
-    if(mode == 2) {
-      vec3 reflectDir = reflect(-lightDir, normal);
-      specAngle = max(dot(reflectDir, viewDir), 0.0);
-      // note that the exponent is different here
-      specular = pow(specAngle, 4.0);
-    }
-  }
+// multiplier to null out lighting factors for 2D rendering
+// diffuse, specular, ambientMat, globalAmbientLight
+// avoids need for conditional testing
+// 3D default: (1,1,1,1)
+// 2D default: (0,0,0,0)
+uniform vec4 lightRenderingFactors;
 
-  gl_FragColor = vec4(ambientColor +
-                      lambertian * diffuseColor +
-                      specular * specColor, 1.0);
+
+
+
+in VS_OUT
+{
+    vec2 texcoord;
+    vec3 eyeDir;
+    vec3 lightDir[8];
+    vec3 normal;
+} fs_in;
+
+
+
+void main(void)
+{
+
+	// check for shadow pass
+	if(shadowPassFlag){
+		return;
+	}
+	
+	vec3 diffuse = vec3(0);
+	vec3 specular = vec3(0);
+
+	for(int i=0; i<8; ++i){
+		// Normalize our incomming view and light direction vectors.
+		vec3 V = normalize(fs_in.eyeDir);
+		vec3 L = normalize(fs_in.lightDir[i]); // ***********multi here
+    
+		// Calculate diffuse color with simple N dot L.
+		// Read the normal from the normal map and normalize it.
+		vec3 N = normalize(texture(bumpMap, fs_in.texcoord).rgb * 2.0 - vec3(1.0));
+    
+		// Uncomment this to use surface normals rather than the normal map
+		// N = vec3(0.0, 0.0, 1.0);
+    
+		// Calculate R ready for use in Phong lighting.
+		vec3 R = reflect(-L, N); // ***********multi here
+
+		// Fetch the diffuse color from the texture.
+		vec3 diffuse_color = texture(diffuseMap, fs_in.texcoord).rgb;
+		diffuse += max(dot(N, L), 0.0) * diffuse_color * vec3(diffuseMaterial) * lights[i].intensity; // ***********multi here
+		// Uncomment this to turn off diffuse shading
+		// diffuse = vec3(0.0);
+
+		// Assume that specular color is white - it could also come from a texture
+		//vec3 specular_color = vec3(1.0);
+		// Calculate Phong specular highlight
+		specular += max(pow(dot(R, V), shininess), 0.0) * vec3(specularMaterial) * lights[i].intensity;
+		// Uncomment this to turn off specular highlights
+		// specular = vec3(0.0);
+	}
+
+	
+	
+	
+	// shadow map
+	if(shadowMapCoords.w>1) {
+		//check the shadow map texture to see if the fragment is in shadow
+		float shadow = textureProj(shadowMap, shadowMapCoords);
+		//darken the diffuse component apprpriately
+
+
+		diffuse = mix(diffuse, diffuse*shadow, 0.4); 
+	}
+
+    // Final color is diffuse + specular + ambient with lightRendering Factors enabling/disabling lighting effects for 2D rendering
+
+	color = vertCol*lightRenderingFactors.w + vec4(diffuse*lightRenderingFactors.x + specular*lightRenderingFactors.y + (vec3(ambientMaterial)*globalAmbientLight)*lightRenderingFactors.z, 1.0);
+
+	color.a = vertCol.a;
+
+
 }

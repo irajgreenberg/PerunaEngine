@@ -11,7 +11,7 @@
 Toroid::Toroid():toroidRadius(1), ringRadius(.45), toroidDetail(36), ringDetail(36) {
     for(int i=0; i<toroidDetail; ++i){
         for(int j=0; j<ringDetail; ++j){
-            cols.push_back(glm::vec4(.15, .05, .13, 1.0));
+            cols.push_back(glm::vec4(.75, .25, .64, 1.0));
         }
     }
     init();
