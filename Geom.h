@@ -51,7 +51,7 @@ public:
 
 private:
 
-	enum { STRIDE = 10 };
+	enum { STRIDE = 12 };
 	std::vector<float> interleavedPrims;
 	std::vector<unsigned int> indPrims;
 
@@ -72,6 +72,7 @@ protected:
     std::vector<glm::vec3> verts;
     std::vector<glm::vec3> vertNorms;
     std::vector<glm::vec4> cols;
+    std::vector<glm::vec2> uvs;
     std::vector<Elem> inds;
     std::vector<Face> faces;
     

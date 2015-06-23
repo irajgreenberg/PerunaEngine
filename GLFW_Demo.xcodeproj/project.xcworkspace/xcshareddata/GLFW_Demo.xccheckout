@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>11DF75F2-B1B2-4480-8E66-A865EC02DD6F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>GLFW_Demo</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>6E5F78214DF4C1E649D6090B2A4763A27FAC18AA</key>
+		<string>github.com:irajgreenberg/cse5382_summer2015.git</string>
+		<key>94C9F2EBE5DFD6F937EED25B01C5AB1F03543762</key>
+		<string>github.com:irajgreenberg/PerunaEngine.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>GLFW_Demo.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>6E5F78214DF4C1E649D6090B2A4763A27FAC18AA</key>
+		<string>../../..</string>
+		<key>94C9F2EBE5DFD6F937EED25B01C5AB1F03543762</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:irajgreenberg/PerunaEngine.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>94C9F2EBE5DFD6F937EED25B01C5AB1F03543762</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>6E5F78214DF4C1E649D6090B2A4763A27FAC18AA</string>
+			<key>IDESourceControlWCCName</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>94C9F2EBE5DFD6F937EED25B01C5AB1F03543762</string>
+			<key>IDESourceControlWCCName</key>
+			<string>GLFW_Demo</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -43,14 +43,15 @@ void Geom::createBuffers(){
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indsDataSize, NULL, GL_STATIC_DRAW); // allocate
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indsDataSize, &indPrims[0]); // upload the data
     
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 4; i++) {
         glEnableVertexAttribArray(i);
     }
-    // STRIDE is 10: pos(3) + vertex norm(3) + col(4)
-    // (x, y, z, nx, ny, nz, r, g, b, a)
+    // STRIDE is 12: pos(3) + vertex norm(3) + col(4) + uv(2)
+    // (x, y, z, nx, ny, nz, r, g, b, a, u, v)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(0)); // pos
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(12)); // vertex norms
     glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(24)); // col
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(40)); // col
     
     // Disable VAO
     glEnableVertexAttribArray(0);
@@ -101,6 +102,10 @@ void Geom::calcPrimitives(){
         interleavedPrims.push_back(cols.at(i).y); // g
         interleavedPrims.push_back(cols.at(i).z); // b
         interleavedPrims.push_back(cols.at(i).w); // a
+    
+        // uvs
+        interleavedPrims.push_back(uvs.at(i).x); // u
+        interleavedPrims.push_back(uvs.at(i).y); // v
     }
     
     // explode inds arrays to primitives
