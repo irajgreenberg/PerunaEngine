@@ -141,6 +141,11 @@ void Geom::display(renderMode mode) {
             break;
     }
     
+    // binds texture per geometry
+    GLuint d = diffuseMapTexture.getTextureID();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, d);
+    
     glBindVertexArray(vaoID);
     glDrawElements(GL_TRIANGLES, static_cast<int>(indPrims.size()), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
     glBindVertexArray(0);
