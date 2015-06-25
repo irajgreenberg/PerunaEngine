@@ -1,7 +1,6 @@
-dependencies: /Users/33993405/dev/GLFW_Demo/main.cpp include/GLFW/glfw3.h \
-  /Users/33993405/dev/GLFW_Demo/Shader.h \
-  /Users/33993405/dev/GLFW_Demo/Cube.h \
-  /Users/33993405/dev/GLFW_Demo/Geom.h \
+dependencies: /Users/33993405/dev/GLFW_Demo/Plane.cpp \
+  /Users/33993405/dev/GLFW_Demo/Plane.h \
+  /Users/33993405/dev/GLFW_Demo/Geom.h include/GLFW/glfw3.h \
   /Users/33993405/dev/GLFW_Demo/Elem.h \
   /Users/33993405/dev/GLFW_Demo/Face.h include/glm/glm.hpp \
   include/glm/detail/_fixes.hpp include/glm/fwd.hpp \
@@ -53,5 +52,4 @@ dependencies: /Users/33993405/dev/GLFW_Demo/main.cpp include/GLFW/glfw3.h \
   include/glm/gtc/matrix_transform.hpp \
   include/glm/gtc/matrix_transform.inl include/glm/gtx/transform2.hpp \
   include/glm/gtx/../gtx/transform.hpp include/glm/gtx/transform.inl \
-  include/glm/gtx/transform2.inl /Users/33993405/dev/GLFW_Demo/Toroid.h \
-  /Users/33993405/dev/GLFW_Demo/Plane.h
+  include/glm/gtx/transform2.inl /Users/33993405/dev/GLFW_Demo/Shader.h

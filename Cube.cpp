@@ -21,7 +21,7 @@ Cube::Cube(glm::vec4 cols[], std::string& diffuseMap){
 		this->cols.push_back(cols[i]);
 	}
     createDiffuseMapTexture(diffuseMap);
-	init();
+    init();
 }
 
 // must include concrete implementations
@@ -37,14 +37,14 @@ void Cube::calcVerts() {
     verts.push_back(glm::vec3(-.5, -.5, -.5));
     
     
-    uvs.push_back(glm::vec2(-.5, .5));
-    uvs.push_back(glm::vec2(-.5, -.5));
-    uvs.push_back(glm::vec2(.5, -.5));
-    uvs.push_back(glm::vec2(.5, .5));
-    uvs.push_back(glm::vec2(-.5, .5));
-    uvs.push_back(glm::vec2(.5, .5));
-    uvs.push_back(glm::vec2(.5, -.5));
-    uvs.push_back(glm::vec2(-.5, -.5));
+    uvs.push_back(glm::vec2(0, 0));
+    uvs.push_back(glm::vec2(0, 1));
+    uvs.push_back(glm::vec2(1, 1));
+    uvs.push_back(glm::vec2(1, 0));
+    uvs.push_back(glm::vec2(0, 0));
+    uvs.push_back(glm::vec2(0, 1));
+    uvs.push_back(glm::vec2(1, 1));
+    uvs.push_back(glm::vec2(1, 0));
 }
 
 void Cube::calcInds() {

@@ -25,6 +25,7 @@
 #include "Shader.h"
 #include "Cube.h"
 #include "Toroid.h"
+#include "Plane.h"
 
 // for matrices
 #include "glm/gtc/type_ptr.hpp" // matrix copying
@@ -46,10 +47,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 
 float width = 640, height = 480;
-Cube* cube, * ground;
-//Toroid toroid;
-// shader
-//Shader* s;
+
 
 // MATRICES
 // model, view, modelView, projection, modelViewProjection
@@ -91,8 +89,6 @@ void pushMatrix();
 void popMatrix();
 std::stack <glm::mat4> matrixStack;
 
-
-
 // create a cube of cubes
 static const int ROWS = 4;
 static const int COLUMNS = 4;
@@ -111,11 +107,11 @@ int main(void) {
 #endif
     
     
-	if (!glfwInit()){
-		exit(EXIT_FAILURE);
-	}
-
-	GLFWwindow* window;
+    if (!glfwInit()){
+        exit(EXIT_FAILURE);
+    }
+    
+    GLFWwindow* window;
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(EXIT_FAILURE);
@@ -135,75 +131,89 @@ int main(void) {
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
     glfwSetKeyCallback(window, key_callback);
-
-	glEnable(GL_DEPTH_TEST);
+    
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-
-	
-    //Shader* s = new Shader("../PerunaEngine/simpleShader01.vert", "../PerunaEngine/simpleShader01.frag");
+    
+    
+#if defined (_WIN32) || defined(_WIN64)
+    Shader* s = new Shader("simpleShader01.vert", "simpleShader01.frag");
+#else
     Shader* s = new Shader("/Users/33993405/dev/GLFW_Demo/simpleShader01.vert", "/Users/33993405/dev/GLFW_Demo/simpleShader01.frag");
-	glm::vec4 cols[] = {
-		glm::vec4(1.0, 0.0, 0.0, 1.0),
-		glm::vec4(0.0, 1.0, 0.0, 1.0),
-		glm::vec4(0.0, 0, 1.0, 1.0),
-		glm::vec4(1.0, 1.0, 0.0, 1.0),
-		glm::vec4(1.0, 0.0, 1.0, 1.0),
-		glm::vec4(0.0, 1.0, 1.0, 1.0),
-		glm::vec4(1.0, 0.5, 0.0, 1.0),
-		glm::vec4(1.0, 1.0, 1.0, 1.0),
-	};
-
+#endif
+    
+    
+    // set up lighting
+    lightPosition = glm::vec4(-6, -12, 30, 1.0);
+    lightIntensity = glm::vec3(1.0, 1.0, 1.0);
+    lightAmbient = glm::vec3(.2, .2, .33);
+    lightDiffuse = glm::vec3(1, 1, 1);
+    lightSpecularity = glm::vec3(1.0, .925, 1.0);
+    lightShininess = 95;
+    
+    
+    // generate ground plane using cube
+    glm::vec4 cols[] = {
+        glm::vec4(1.0, 0.0, 0.0, 1.0),
+        glm::vec4(0.0, 1.0, 0.0, 1.0),
+        glm::vec4(0.0, 0, 1.0, 1.0),
+        glm::vec4(1.0, 1.0, 0.0, 1.0),
+        glm::vec4(1.0, 0.0, 1.0, 1.0),
+        glm::vec4(0.0, 1.0, 1.0, 1.0),
+        glm::vec4(1.0, 0.5, 0.0, 1.0),
+        glm::vec4(1.0, 1.0, 1.0, 1.0),
+    };
+    
     for(int i=0; i<8; ++i){
         cols[i] = glm::vec4(.3+i*.1, .3, .3, 1.0);
         //cols[i] = glm::vec4(.2, .2, .2, 1.0);
     }
 
-	// set up lighting
-	lightPosition = glm::vec4(-6, -12, 30, 1.0);
-	lightIntensity = glm::vec3(1.0, 1.0, 1.0);
-	lightAmbient = glm::vec3(.2, .2, .33);
-	lightDiffuse = glm::vec3(1, 1, 1);
-	lightSpecularity = glm::vec3(1.0, .925, 1.0);
-	lightShininess = 95;
-
-
-	//cube = new Cube(cols, "/Users/33993405/dev/GLFW_Demo/metal_grate.jpg");
-	//ground = new Cube(cols, "/Users/33993405/dev/GLFW_Demo/metal_grate.jpg");
-    //float toroidRadius, float ringRadius, int toroidDetail, int ringDetail
-   // toroid = new Toroid(1, .45, 16, 16);
-    Toroid toroid(1, .45, 36, 36, glm::vec4(.75, .75, .85, 1.0), "/Users/33993405/dev/GLFW_Demo/metal_grate.jpg");
-
+#if defined (_WIN32) || defined(_WIN64)
+    std::string diffuseImg = "corroded_metal.jpg";
+#else
+    std::string diffuseImg = "/Users/33993405/dev/GLFW_Demo/corroded_metal.jpg";
+#endif
+    //Cube ground(cols, diffuseImg);
     
-
-	// initialize view matrices
-	glViewport(0, 0, 640, 480);
-
-	// START standard transformation matrices: ModelView / Projection / Normal
-	M = glm::mat4(1.0f); // set to identity
+    Plane ground(glm::vec4(1, 1, 1, 1), diffuseImg);
+    
+#if defined (_WIN32) || defined(_WIN64)
+    diffuseImg = "metal_grate.jpg";
+#else
+    diffuseImg = "/Users/33993405/dev/GLFW_Demo/metal_grate.jpg";
+#endif
+    Toroid toroid(1, .45, 36, 36, glm::vec4(.75, .75, .85, 1.0), diffuseImg);
+    
+    // initialize view matrices
+    glViewport(0, 0, 640, 480);
+    
+    // START standard transformation matrices: ModelView / Projection / Normal
+    M = glm::mat4(1.0f); // set to identity
     // eye, center, up axis
-	V = glm::lookAt(glm::vec3(0.0, 0.0, 3.0f), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
-	MV = V * M;
+    V = glm::lookAt(glm::vec3(0.0, 0.0, 3.0f), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+    MV = V * M;
     N = glm::transpose(glm::inverse(glm::mat3(MV)));
-
-	// projection matrix and MVP Matrix
-	// perspective
-	viewAngle = 75.0f;
-	aspect = float(width) / float(height);
-
-	P = glm::perspective(viewAngle, aspect, nearDist, farDist);
-	MVP = P * MV;
-	// END Model / View / Projection data
-
-	// tranformation matricies
-	T = glm::mat4(1.0f);
-	R = glm::mat4(1.0f);
-	S = glm::mat4(1.0f);
-	s->bind();
-
-	initUniforms(s);
-
-// set up vals for cube of cubes
+    
+    // projection matrix and MVP Matrix
+    // perspective
+    viewAngle = 75.0f;
+    aspect = float(width) / float(height);
+    
+    P = glm::perspective(viewAngle, aspect, nearDist, farDist);
+    MVP = P * MV;
+    // END Model / View / Projection data
+    
+    // tranformation matricies
+    T = glm::mat4(1.0f);
+    R = glm::mat4(1.0f);
+    S = glm::mat4(1.0f);
+    s->bind();
+    
+    initUniforms(s);
+    
+    // set up vals for cube of cubes
     columnGap = columnWidth / (COLUMNS-1);
     rowGap = rowHeight / (ROWS-1);
     layerGap = layerDepth / (LAYERS-1);
@@ -217,51 +227,51 @@ int main(void) {
         
         // set viewport using actual resolution independent screen size
         glViewport(0, 0, w, h);
-		
-
-		// reset to identity each frame
-		M = glm::mat4(1.0f);
+        
+        
+        // reset to identity each frame
+        M = glm::mat4(1.0f);
         V = glm::lookAt(glm::vec3(0.0, 0.0, 20), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0));
-		MV = V * M;
+        MV = V * M;
         //mat4 normalMatrix = transpose(inverse(modelView));
         N = glm::transpose(glm::inverse(glm::mat3(MV)));
-		MVP = P * MV;
-
-		// update matrices
-		glUniformMatrix4fv(M_U, 1, GL_FALSE, &M[0][0]);
-		glUniformMatrix4fv(MV_U, 1, GL_FALSE, &MV[0][0]);
-		glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
+        MVP = P * MV;
+        
+        // update matrices
+        glUniformMatrix4fv(M_U, 1, GL_FALSE, &M[0][0]);
+        glUniformMatrix4fv(MV_U, 1, GL_FALSE, &MV[0][0]);
+        glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
         glUniformMatrix4fv(N_U, 1, GL_FALSE, &N[0][0]);
-
-		// update lighting model
-		glUniform4fv(LT_POS_U, 1, &lightPosition[0]);
-		glUniform3fv(LT_INT_U, 1, &lightIntensity[0]);
-		glUniform3fv(LT_AMB_U, 1, &lightAmbient[0]);
-		glUniform3fv(LT_DIF_U, 1, &lightDiffuse[0]);
-		glUniform3fv(LT_SPEC_U, 1, &lightSpecularity[0]);
-		glUniform1f(LT_SHIN_U, lightShininess);
-
-		// global transforms
+        
+        // update lighting model
+        glUniform4fv(LT_POS_U, 1, &lightPosition[0]);
+        glUniform3fv(LT_INT_U, 1, &lightIntensity[0]);
+        glUniform3fv(LT_AMB_U, 1, &lightAmbient[0]);
+        glUniform3fv(LT_DIF_U, 1, &lightDiffuse[0]);
+        glUniform3fv(LT_SPEC_U, 1, &lightSpecularity[0]);
+        glUniform1f(LT_SHIN_U, lightShininess);
+        
+        // global transforms
         pushMatrix();
         translate(glm::vec3(0, -5, 0));
-        scale(glm::vec3(2000, .3, 2000));
-        //ground->display();
+        scale(glm::vec3(200, 1, 200));
+        ground.display();
         popMatrix();
         
         //rotate(-glfwGetTime()*.1, glm::vec3(-.35, 1, .1));
         
-        for(int i=0; i<COLUMNS; ++i){
-            for(int j=0; j<ROWS; ++j){
-                for(int k=0; k<LAYERS; ++k){
-                    pushMatrix();
-                    translate(glm::vec3(-columnWidth/2+columnGap*i, -rowHeight/2+rowGap*j, -layerDepth/2+layerGap*k));
-                    rotate(-glfwGetTime(), glm::vec3(-.35, 1, .1));
-                    scale(glm::vec3(.55, .55, .55));
-                   // cube->display();
-                    popMatrix();
-                }
-            }
-        }
+//        for(int i=0; i<COLUMNS; ++i){
+//            for(int j=0; j<ROWS; ++j){
+//                for(int k=0; k<LAYERS; ++k){
+//                    pushMatrix();
+//                    translate(glm::vec3(-columnWidth/2+columnGap*i, -rowHeight/2+rowGap*j, -layerDepth/2+layerGap*k));
+//                    rotate(-glfwGetTime(), glm::vec3(-.35, 1, .1));
+//                    scale(glm::vec3(2.55, 2.55, 2.55));
+//                    ground.display();
+//                    popMatrix();
+//                }
+//            }
+//        }
         
         pushMatrix();
         translate(glm::vec3(0, 0, -8));
@@ -269,7 +279,7 @@ int main(void) {
         scale(glm::vec3(2.55, 2.55, 2.55));
         toroid.display();
         popMatrix();
-
+        
         
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -281,48 +291,48 @@ int main(void) {
 }
 
 void initUniforms(Shader* s){
-   // std::cout << "s->shader_id = " << s->shader_id << std::endl;
-	// set variable name of uniforms in shader
-	M_U = glGetUniformLocation(s->shader_id, "modelMatrix");
-	MV_U = glGetUniformLocation(s->shader_id, "modelViewMatrix");
-	MVP_U = glGetUniformLocation(s->shader_id, "modelViewProjectionMatrix");
+    // std::cout << "s->shader_id = " << s->shader_id << std::endl;
+    // set variable name of uniforms in shader
+    M_U = glGetUniformLocation(s->shader_id, "modelMatrix");
+    MV_U = glGetUniformLocation(s->shader_id, "modelViewMatrix");
+    MVP_U = glGetUniformLocation(s->shader_id, "modelViewProjectionMatrix");
     N_U = glGetUniformLocation(s->shader_id, "normalMatrix");
-
-	// lighting
-	// ADS Lighting Model uniforms
-	LT_POS_U = glGetUniformLocation(s->shader_id, "lightPos");
-	LT_INT_U = glGetUniformLocation(s->shader_id, "lightInt");
-	LT_AMB_U = glGetUniformLocation(s->shader_id, "amb");
-	LT_DIF_U = glGetUniformLocation(s->shader_id, "diff");
-	LT_SPEC_U = glGetUniformLocation(s->shader_id, "spec");
-	LT_SHIN_U = glGetUniformLocation(s->shader_id, "shin");
+    
+    // lighting
+    // ADS Lighting Model uniforms
+    LT_POS_U = glGetUniformLocation(s->shader_id, "lightPos");
+    LT_INT_U = glGetUniformLocation(s->shader_id, "lightInt");
+    LT_AMB_U = glGetUniformLocation(s->shader_id, "amb");
+    LT_DIF_U = glGetUniformLocation(s->shader_id, "diff");
+    LT_SPEC_U = glGetUniformLocation(s->shader_id, "spec");
+    LT_SHIN_U = glGetUniformLocation(s->shader_id, "shin");
 }
 
 // TCRANSFORMAION Functions
 void translate(glm::vec3 v) {
-	M = glm::translate(M, v);
-	concat();
+    M = glm::translate(M, v);
+    concat();
 }
 
 void rotate(float ang, glm::vec3 axes) {
-	M = glm::rotate(M, ang, axes);
-	concat();
+    M = glm::rotate(M, ang, axes);
+    concat();
 }
 
 void scale(glm::vec3 sclFactor) {
-	M = glm::scale(M, sclFactor);
-	concat();
+    M = glm::scale(M, sclFactor);
+    concat();
 }
 
 // rebuild transformed MVP matrix and update shader uniforms
 void concat(){
-	MV = V * M;
+    MV = V * M;
     //gl_NormalMatrix= glm::transpose(glm::inverse(glm::mat3(gl_ModelViewMatrix)));
     N = glm::transpose(glm::inverse(glm::mat3(MV)));
-	MVP = P * MV;
-	glUniformMatrix4fv(M_U, 1, GL_FALSE, &M[0][0]);
-	glUniformMatrix4fv(MV_U, 1, GL_FALSE, &MV[0][0]);
-	glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
+    MVP = P * MV;
+    glUniformMatrix4fv(M_U, 1, GL_FALSE, &M[0][0]);
+    glUniformMatrix4fv(MV_U, 1, GL_FALSE, &MV[0][0]);
+    glUniformMatrix4fv(MVP_U, 1, GL_FALSE, &MVP[0][0]);
     glUniformMatrix4fv(N_U, 1, GL_FALSE, &N[0][0]);
 }
 

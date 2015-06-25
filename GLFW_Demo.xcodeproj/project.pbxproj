@@ -17,8 +17,9 @@
 		728D6D1B1B1E28D9005BA29C /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 728D6D1A1B1E28D9005BA29C /* CoreVideo.framework */; };
 		728D6D1D1B1E28EC005BA29C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 728D6D1C1B1E28EC005BA29C /* IOKit.framework */; };
 		728D6FE01B1E2B36005BA29C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 728D6FDF1B1E2B36005BA29C /* Cocoa.framework */; };
-		7292921F1B3B9F25001D2244 /* libfreeimage.3.16.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 72199D5D1B3B37F300804C67 /* libfreeimage.3.16.0.dylib */; };
 		729292211B3BA16F001D2244 /* libglfw3.3.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 729292201B3BA16F001D2244 /* libglfw3.3.1.dylib */; };
+		72F84DAF1B3C68C200B5112B /* libfreeimage.3.16.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 72F84DAE1B3C68C200B5112B /* libfreeimage.3.16.0.dylib */; };
+		72F84DB21B3C78AF00B5112B /* Plane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F84DB01B3C78AF00B5112B /* Plane.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -60,6 +61,9 @@
 		728D6D1C1B1E28EC005BA29C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		728D6FDF1B1E2B36005BA29C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		729292201B3BA16F001D2244 /* libglfw3.3.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libglfw3.3.1.dylib; sourceTree = "<group>"; };
+		72F84DAE1B3C68C200B5112B /* libfreeimage.3.16.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfreeimage.3.16.0.dylib; path = ../../../../usr/local/Cellar/freeimage/3.16.0/lib/libfreeimage.3.16.0.dylib; sourceTree = "<group>"; };
+		72F84DB01B3C78AF00B5112B /* Plane.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Plane.cpp; sourceTree = "<group>"; };
+		72F84DB11B3C78AF00B5112B /* Plane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Plane.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,7 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7292921F1B3B9F25001D2244 /* libfreeimage.3.16.0.dylib in Frameworks */,
+				72F84DAF1B3C68C200B5112B /* libfreeimage.3.16.0.dylib in Frameworks */,
 				729292211B3BA16F001D2244 /* libglfw3.3.1.dylib in Frameworks */,
 				728D6FE01B1E2B36005BA29C /* Cocoa.framework in Frameworks */,
 				728D6D1D1B1E28EC005BA29C /* IOKit.framework in Frameworks */,
@@ -82,6 +86,9 @@
 		728D6D031B1E28A0005BA29C = {
 			isa = PBXGroup;
 			children = (
+				72F84DB01B3C78AF00B5112B /* Plane.cpp */,
+				72F84DB11B3C78AF00B5112B /* Plane.h */,
+				72F84DAE1B3C68C200B5112B /* libfreeimage.3.16.0.dylib */,
 				72199D491B3B2BA200804C67 /* ProtoTexture.cpp */,
 				72199D4A1B3B2BA200804C67 /* ProtoTexture.h */,
 				72199D451B3B2B2A00804C67 /* libglfw3.a */,
@@ -196,6 +203,7 @@
 				72199D4B1B3B2BA200804C67 /* ProtoTexture.cpp in Sources */,
 				7246BE3D1B39CD12003DAC6D /* main.cpp in Sources */,
 				7246BE3C1B39CD12003DAC6D /* Geom.cpp in Sources */,
+				72F84DB21B3C78AF00B5112B /* Plane.cpp in Sources */,
 				7246BE401B39CD12003DAC6D /* Shader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -289,9 +297,10 @@
 					/Users/33993405/Documents/GLFW/src,
 					/Users/33993405/dev/FreeImage_TestApp,
 					"$(PROJECT_DIR)",
+					/usr/local/Cellar/freeimage/3.16.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "include /Users/33993405/dev/GLFW_Demo/include/FreeImage /Users/33993405/dev/GLFW_Demo/include/GLFW";
+				USER_HEADER_SEARCH_PATHS = "include/**";
 			};
 			name = Debug;
 		};
@@ -304,9 +313,10 @@
 					/Users/33993405/Documents/GLFW/src,
 					/Users/33993405/dev/FreeImage_TestApp,
 					"$(PROJECT_DIR)",
+					/usr/local/Cellar/freeimage/3.16.0/lib,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "include /Users/33993405/dev/GLFW_Demo/include/FreeImage /Users/33993405/dev/GLFW_Demo/include/GLFW";
+				USER_HEADER_SEARCH_PATHS = "include/**";
 			};
 			name = Release;
 		};
