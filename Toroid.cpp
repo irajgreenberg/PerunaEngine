@@ -13,17 +13,19 @@ Toroid::Toroid():toroidRadius(1), ringRadius(.45), toroidDetail(36), ringDetail(
         for(int j=0; j<ringDetail; ++j){
             cols.push_back(glm::vec4(.75, .25, .64, 1.0));
         }
+        //createDiffuseMapTexture( --add string-- );
     }
     init();
 }
 
-Toroid::Toroid(float toroidRadius, float ringRadius, int toroidDetail, int ringDetail, const glm::vec4& col):
+Toroid::Toroid(float toroidRadius, float ringRadius, int toroidDetail, int ringDetail, const glm::vec4& col, const std::string& diffuseMap):
 toroidRadius(toroidRadius), ringRadius(ringRadius), toroidDetail(toroidDetail), ringDetail(ringDetail) {
     for(int i=0; i<toroidDetail; ++i){
         for(int j=0; j<ringDetail; ++j){
             cols.push_back(col);
         }
     }
+    createDiffuseMapTexture(diffuseMap);
     init();
 }
 
@@ -58,7 +60,9 @@ void Toroid::calcVerts() {
         for(int j=0; j<ringDetail; ++j){
             // now rotate around z-axis
             verts.push_back(glm::vec3( temp.x*cos(phi) - temp.y*sin(phi), temp.x*sin(phi) + temp.y*cos(phi), temp.z ));
+            uvs.push_back(glm::vec2(theta/(M_PI), phi/(M_PI*2)*4));
             phi += M_PI*2/ringDetail;
+            
             
             // 2 triangles making up each quad of toroid
             /*

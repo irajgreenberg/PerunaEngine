@@ -168,11 +168,11 @@ int main(void) {
 	lightShininess = 95;
 
 
-	cube = new Cube(cols);
-	ground = new Cube(cols);
+	//cube = new Cube(cols, "/Users/33993405/dev/GLFW_Demo/metal_grate.jpg");
+	//ground = new Cube(cols, "/Users/33993405/dev/GLFW_Demo/metal_grate.jpg");
     //float toroidRadius, float ringRadius, int toroidDetail, int ringDetail
    // toroid = new Toroid(1, .45, 16, 16);
-    Toroid toroid(1, .45, 36, 36);
+    Toroid toroid(1, .45, 36, 36, glm::vec4(.75, .75, .85, 1.0), "/Users/33993405/dev/GLFW_Demo/metal_grate.jpg");
 
     
 
@@ -245,7 +245,7 @@ int main(void) {
         pushMatrix();
         translate(glm::vec3(0, -5, 0));
         scale(glm::vec3(2000, .3, 2000));
-        ground->display();
+        //ground->display();
         popMatrix();
         
         //rotate(-glfwGetTime()*.1, glm::vec3(-.35, 1, .1));

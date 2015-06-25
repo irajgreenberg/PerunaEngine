@@ -31,6 +31,8 @@
 #include "Elem.h"
 #include "Face.h"
 #include "glm/glm.hpp"
+#include "ProtoTexture.h"
+#include "Shader.h"
 
 
 
@@ -64,6 +66,8 @@ private:
     void calcVertexNorms();
     void calcPrimitives();
     void createBuffers();
+    
+   
 	
    
 
@@ -75,6 +79,11 @@ protected:
     std::vector<glm::vec2> uvs;
     std::vector<Elem> inds;
     std::vector<Face> faces;
+    
+    GLint diffuseMapLoc;
+    ProtoTexture diffuseMapTexture;
+    void createDiffuseMapTexture(const std::string& diffuseMapImage);
+    //std::string diffuseMapImage;
     
     
     void calcFaces();

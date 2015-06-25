@@ -1,0 +1,1 @@
+../Cellar/freeimage/3.16.0/include/FreeImage.h

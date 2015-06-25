@@ -43,4 +43,13 @@ dependencies: /Users/33993405/dev/GLFW_Demo/Toroid.cpp \
   include/glm/detail/func_matrix.hpp include/glm/detail/func_matrix.inl \
   include/glm/vector_relational.hpp include/glm/integer.hpp \
   include/glm/detail/func_integer.hpp \
-  include/glm/detail/func_integer.inl
+  include/glm/detail/func_integer.inl \
+  /Users/33993405/dev/GLFW_Demo/ProtoTexture.h \
+  /Users/33993405/dev/GLFW_Demo/FreeImage.h include/glm/gtc/type_ptr.hpp \
+  include/glm/gtc/../gtc/quaternion.hpp \
+  include/glm/gtc/../gtc/constants.hpp include/glm/gtc/constants.inl \
+  include/glm/gtc/quaternion.inl include/glm/gtc/type_ptr.inl \
+  include/glm/gtc/matrix_transform.hpp \
+  include/glm/gtc/matrix_transform.inl include/glm/gtx/transform2.hpp \
+  include/glm/gtx/../gtx/transform.hpp include/glm/gtx/transform.inl \
+  include/glm/gtx/transform2.inl /Users/33993405/dev/GLFW_Demo/Shader.h

@@ -16,7 +16,7 @@ class Cube: public Geom {
     
 public:
     Cube();
-	Cube(glm::vec4 cols[]);
+	Cube(glm::vec4 cols[], std::string& diffuseMap);
     // must ocreated concrete implementations
     // of abstract functions (pure virtuals)
     void calcVerts();

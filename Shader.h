@@ -1,3 +1,6 @@
+#ifndef GLFW_SHADER_h
+#define GLFW_SHADER_h
+
 #if defined(_WIN32) || defined(_WIN64)
 #include <GL/glew.h>
 #else
@@ -91,5 +94,5 @@ inline void Shader::setShaders(const std::string& vShaderURL, const std::string&
 	init();
 }
 
-
+#endif //GLFW_SHADER_h
 

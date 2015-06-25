@@ -51,7 +51,7 @@ void Geom::createBuffers(){
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(0)); // pos
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(12)); // vertex norms
     glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(24)); // col
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(40)); // col
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, STRIDE * sizeof (GLfloat), BUFFER_OFFSET(40)); //uvs
     
     // Disable VAO
     glEnableVertexAttribArray(0);
@@ -114,6 +114,12 @@ void Geom::calcPrimitives(){
         indPrims.push_back(inds.at(i).e1);
         indPrims.push_back(inds.at(i).e2);
     }
+}
+
+void Geom::createDiffuseMapTexture(const std::string& diffuseMapImage){// create default texture for diffuseMap
+    diffuseMapTexture = ProtoTexture(diffuseMapImage, ProtoTexture::DIFFUSE_MAP, GL_RGB, GL_RGB, 0, 0);
+    diffuseMapLoc = glGetUniformLocation(Shader::getID_2(), "diffuseMap");
+    glUniform1i(diffuseMapLoc, 0); // bind to sampler location 0 // not needed glsl >=4.2
 }
 
 void Geom::display(renderMode mode) {
