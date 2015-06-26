@@ -18,7 +18,7 @@ Cube::Cube() {
 
 Cube::Cube(glm::vec4 cols[], std::string& diffuseMap){
 	for (int i = 0; i < 8; ++i){
-		this->cols.push_back(cols[i]);
+		this->cols.push_back(col);
 	}
     createDiffuseMapTexture(diffuseMap);
     init();
